@@ -1,0 +1,91 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void writeInputFile() {
+    FILE *fp;
+    int num;
+
+    fp = fopen("input.txt", "w");
+    if (fp == NULL) {
+        printf("Error opening input.txt for writing!\n");
+        exit(1);
+    }
+
+    printf("Enter 10 integers:\n");
+    for (int i = 0; i < 10; i++) {
+        printf("Number %d: ", i + 1);
+        scanf("%d", &num);
+        fprintf(fp, "%d\n", num);
+    }
+
+    fclose(fp);
+    printf("Data successfully written to input.txt\n\n");
+}
+
+void processFiles() {
+    FILE *fin, *fout;
+    int num, count = 0, sum = 0;
+    float avg;
+
+    fin = fopen("input.txt", "r");
+    if (fin == NULL) {
+        printf("Error opening input.txt for reading!\n");
+        exit(1);
+    }
+
+    fout = fopen("output.txt", "w");
+    if (fout == NULL) {
+        printf("Error opening output.txt for writing!\n");
+        fclose(fin);
+        exit(1);
+    }
+
+    // Read integers and calculate sum
+    while (fscanf(fin, "%d", &num) == 1) {
+        sum += num;
+        count++;
+    }
+
+    if (count > 0)
+        avg = (float)sum / count;
+    else
+        avg = 0;
+
+    fprintf(fout, "Sum = %d\nAverage = %.2f\n", sum, avg);
+
+    fclose(fin);
+    fclose(fout);
+    printf("Sum and average written to output.txt\n\n");
+}
+
+void displayFiles() {
+    FILE *fp;
+    char ch;
+
+    printf("Contents of input.txt:\n");
+    fp = fopen("input.txt", "r");
+    if (fp == NULL) {
+        printf("Error opening input.txt!\n");
+        return;
+    }
+    while ((ch = fgetc(fp)) != EOF)
+        putchar(ch);
+    fclose(fp);
+
+    printf("\nContents of output.txt:\n");
+    fp = fopen("output.txt", "r");
+    if (fp == NULL) {
+        printf("Error opening output.txt!\n");
+        return;
+    }
+    while ((ch = fgetc(fp)) != EOF)
+        putchar(ch);
+    fclose(fp);
+}
+
+int main() {
+    writeInputFile();
+    processFiles();
+    displayFiles();
+    return 0;
+}
